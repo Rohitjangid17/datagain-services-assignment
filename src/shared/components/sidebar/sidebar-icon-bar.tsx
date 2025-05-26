@@ -38,7 +38,7 @@ export default function SidebarIconBar() {
       `}>
             {/* Toggle Button */}
             <div className="flex items-center justify-between px-3 py-4 border-b">
-                <button onClick={() => setIsExpanded(!isExpanded)} className="text-gray-600">
+                <button onClick={() => setIsExpanded(!isExpanded)} className="text-red-500">
                     {isExpanded ? <ArrowBackIcon /> : <ArrowForwardIcon />}
                 </button>
                 {isExpanded && <span className="font-semibold text-sm">Menu</span>}
