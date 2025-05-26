@@ -41,3 +41,22 @@ export interface PageTitleProps {
     buttonText?: string;
     onClick?: () => void;
 }
+
+export interface EventDialogProps  {
+    open: boolean
+    onClose: () => void
+    onSubmit: () => void
+    formData: {
+        title: string
+        date: string
+        type: "event" | "reminder"
+        color: string
+    }
+    setFormData: React.Dispatch<React.SetStateAction<{
+        title: string
+        date: string
+        type: "event" | "reminder"
+        color: string
+    }>>
+    currentEvent: CalendarEvent | null
+}

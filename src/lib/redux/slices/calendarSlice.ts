@@ -6,13 +6,21 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
 const initialState: CalendarState = {
     events: [
-        { id: "1", title: "PHASE 2 testing12", date: "2023-07-02", type: "event", color: "blue" },
-        { id: "2", title: "phase 3rd LIMS", date: "2023-07-02", type: "reminder", color: "orange" },
-        { id: "3", title: "Orange", date: "2023-07-03", type: "event", color: "orange" },
-        { id: "4", title: "20", date: "2023-07-04", type: "reminder", color: "black" },
-        { id: "5", title: "Orange", date: "2023-07-05", type: "event", color: "orange" },
-        { id: "6", title: "Orange", date: "2023-07-06", type: "reminder", color: "orange" },
-        { id: "7", title: "20", date: "2023-07-07", type: "event", color: "blue" },
+        { id: "1", title: "PHASE 2 testing12", date: "2025-05-02", type: "event", color: "blue" },
+        { id: "2", title: "phase 3rd LIMS", date: "2025-05-02", type: "reminder", color: "orange" },
+        { id: "3", title: "Orange", date: "2025-05-03", type: "event", color: "orange" },
+        { id: "4", title: "20", date: "2025-05-04", type: "reminder", color: "black" },
+        { id: "5", title: "Orange", date: "2025-05-05", type: "event", color: "orange" },
+        { id: "6", title: "Orange", date: "2025-05-06", type: "reminder", color: "orange" },
+        { id: "7", title: "20", date: "2025-05-07", type: "event", color: "blue" },
+        { id: "8", title: "Blue", date: "2025-05-08", type: "event", color: "blue" },
+        { id: "9", title: "PHASE 2 testing12", date: "2025-05-10", type: "event", color: "blue" },
+        { id: "10", title: "phase 3rd LIMS", date: "2025-05-10", type: "reminder", color: "orange" },
+        { id: "11", title: "20", date: "2025-05-11", type: "reminder", color: "black" },
+        { id: "12", title: "Orange", date: "2025-05-12", type: "event", color: "orange" },
+        { id: "13", title: "Grey", date: "2025-05-13", type: "event", color: "grey" },
+        { id: "14", title: "Black", date: "2025-05-14", type: "event", color: "black" },
+        { id: "15", title: "20", date: "2025-05-15", type: "event", color: "blue" }
     ],
     selectedDate: null,
 }
