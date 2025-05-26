@@ -35,6 +35,7 @@ import {
     Delete as DeleteIcon,
     Refresh as RefreshIcon,
 } from "@mui/icons-material"
+import PageTitle from "@/shared/components/page-title"
 
 // Simple ID generator
 const generateId = () => Math.random().toString(36).substr(2, 9)
@@ -245,10 +246,8 @@ export default function CalendarPage() {
     }
 
     return (
-        <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold text-gray-800">Calendar</h1>
-            </div>
+        <div className="">
+            <PageTitle title="Calendar" />
 
             <Paper className="p-4 mb-6">
                 <div className="flex justify-between items-center mb-4">

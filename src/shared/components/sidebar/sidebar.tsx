@@ -1,65 +1,83 @@
-"use client"
+'use client';
 
-import type React from "react"
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
-import { toggleSidebar, setActiveItem } from "@/lib/redux/slices/sidebarSlice"
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState } from '@/lib/redux/store';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import {
-  CalendarMonth,
   Work,
-  Description,
+  Report,
+  CalendarMonth,
   ChevronRight,
-  ExpandMore,
-} from "@mui/icons-material"
-import { usePathname } from "next/navigation";
-import SidebarItem from "./sidebar-item";
+  Close,
+} from '@mui/icons-material';
+import { closeMainSidebar } from '@/lib/redux/slices/sidebarSlice';
 
-export default function Sidebar() {
-  const dispatch = useAppDispatch()
-  const { isExpanded, activeItem } = useAppSelector((state) => state.sidebar)
-  const pathname = usePathname()
+const menuItems = [
+  { name: 'Work Orders', icon: <Work />, path: '/work-orders' },
+  { name: 'Reports', icon: <Report />, path: '/reports' },
+  { name: 'Calendar', icon: <CalendarMonth />, path: '/calendar' },
+];
 
-  const handleToggle = () => {
-    dispatch(toggleSidebar())
-  }
-
-  const handleItemClick = (item: string) => {
-    dispatch(setActiveItem(item))
-  }
-
-  // Only include pages that actually exist
-  const sidebarItems = [
-    { icon: <Work />, text: "Work Orders", path: "/work-orders" },
-    { icon: <Description />, text: "Reports", path: "/reports" },
-    { icon: <CalendarMonth />, text: "Calendar", path: "/calendar" },
-  ]
+export default function SidebarMain() {
+  const isOpen = useSelector((state: RootState) => state.sidebar.isMainSidebarOpen);
+  const pathname = usePathname();
+  const dispatch = useDispatch();
 
   return (
-    <div className={`h-screen bg-white border-r transition-all duration-300 ${isExpanded ? "w-64" : "w-16"}`}>
-      <div className="flex items-center justify-between p-4 border-b">
-        <div className="flex items-center">
-          <img src="/images/placeholder.svg?height=40&width=40" alt="LIMS Logo" className="h-10 w-10 rounded-md" />
-          {isExpanded && <h1 className="ml-3 text-xl font-semibold">LIMS</h1>}
-        </div>
-        <button onClick={handleToggle} className="p-1 rounded-full hover:bg-gray-100 text-gray-500">
-          {isExpanded ? <ChevronRight /> : <ExpandMore />}
-        </button>
-      </div>
+    <div className="relative">
+      {/* Background Overlay behind Sidebar on Mobile */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-gray-300 bg-opacity-50 z-40 lg:hidden"
+          onClick={() => dispatch(closeMainSidebar())}
+        />
+      )}
 
-      <div className="p-3">
-        {sidebarItems.map((item, index) => (
-          <SidebarItem
-            key={index}
-            icon={item.icon}
-            text={item.text}
-            path={item.path}
-            isActive={pathname === item.path || activeItem === item.text}
-            isExpanded={isExpanded}
-            // hasSubItems={item.hasSubItems}
-            // subItems={item.subItems}
-            onClick={() => handleItemClick(item.text)}
-          />
-        ))}
+      <div
+        className={`
+          fixed top-0 left-0 z-50 bg-white shadow-md h-screen
+          transition-all duration-300 ease-in-out overflow-hidden
+          ${isOpen ? 'w-60' : 'w-0'}
+          lg:static lg:w-60
+        `}>
+        {/* Close Button (Mobile only) */}
+        <div className="lg:hidden flex justify-end p-2">
+          <button
+            onClick={() => dispatch(closeMainSidebar())}
+            className="text-gray-600 hover:text-gray-900"
+            aria-label="Close Sidebar">
+            <Close />
+          </button>
+        </div>
+
+        <div className="pt-2 px-2">
+          <ul className="space-y-1">
+            {menuItems.map(({ name, icon, path }, index) => {
+              const isActive = pathname === path;
+              return (
+                <li key={index}>
+                  <Link href={path} className="block">
+                    <div
+                      className={`
+                        flex items-center justify-between px-4 py-2 rounded-md cursor-pointer transition-all
+                        ${isActive
+                          ? 'bg-[#dcf6f3] text-[#17c2af] font-medium'
+                          : 'text-gray-800 hover:bg-gray-100'}
+                      `}>
+                      <div className="flex items-center gap-3">
+                        <span className="text-xl">{icon}</span>
+                        <span className="text-sm">{name}</span>
+                      </div>
+                      <ChevronRight fontSize="small" />
+                    </div>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
       </div>
     </div>
-  )
+  );
 }

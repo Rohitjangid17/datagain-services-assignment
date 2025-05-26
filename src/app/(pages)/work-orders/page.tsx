@@ -2,33 +2,11 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  Button,
-  TextField,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-  Menu,
-  MenuItem,
-  InputAdornment,
-} from "@mui/material"
-import {
-  Add as AddIcon,
-  Search as SearchIcon,
-  FilterList as FilterIcon,
-  MoreVert as MoreVertIcon,
-} from "@mui/icons-material"
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Menu, MenuItem, InputAdornment, TablePagination, Select, Typography, Pagination, } from "@mui/material"
+import { Add as AddIcon, Search as SearchIcon, FilterList as FilterIcon, MoreVert as MoreVertIcon, } from "@mui/icons-material"
 import { addOrder, deleteOrder, filterOrders, updateOrder, WorkOrder } from "@/lib/redux/slices/workOrdersSlice"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
+import PageTitle from "@/shared/components/page-title"
 
 // Simple ID generator
 const generateId = () => Math.random().toString(36).substr(2, 9)
@@ -42,7 +20,9 @@ export default function WorkOrdersPage() {
   const [currentOrder, setCurrentOrder] = useState<WorkOrder | null>(null)
   const [displayOrders, setDisplayOrders] = useState<WorkOrder[]>([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const [formData, setFormData] = useState({
     donor: "",
@@ -147,31 +127,29 @@ export default function WorkOrdersPage() {
     }
   }
 
+  const handleChangePage = (_event: unknown, newPage: number) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
+
+  const paginatedOrders = orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
   return (
-    <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Work Orders</h1>
-        <Button variant="contained" color="primary" startIcon={<AddIcon />} onClick={handleClickOpen}>
-          React Order
-        </Button>
-      </div>
+    <div className="">
+      <PageTitle title="Work Orders" showButton onClick={handleClickOpen} buttonText="React Order" />
 
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <div className="flex items-center">
-          <span className="mr-2">Date:</span>
-          <TextField
-            size="small"
-            value={startDate}
-            onChange={(e) => handleFilterChange(e as React.ChangeEvent<HTMLInputElement>, "startDate")}
-            className="w-32"
-          />
-          <span className="mx-2">-</span>
-          <TextField
-            size="small"
-            value={endDate}
-            onChange={(e) => handleFilterChange(e as React.ChangeEvent<HTMLInputElement>, "endDate")}
-            className="w-32"
-          />
+          <span className="mr-2 text-gray-600 font-bold">Date:</span>
+          <div className="flex items-center gap-x-1">
+            <span className="text-gray-600">06/01/2024</span>
+            <span className="text-gray-600">-</span>
+            <span className="text-gray-600">07/19/2024</span>
+          </div>
         </div>
 
         <div className="flex-grow"></div>
@@ -191,60 +169,106 @@ export default function WorkOrdersPage() {
           className="w-64"
         />
 
-        <Button variant="contained" color="primary">
+        <Button variant="contained" className="!bg-[#17c2af] !rounded-full !text-white !font-bold !text-sm !px-6 !py-3 !shadow-none">
           Search
         </Button>
 
-        <Button variant="outlined" startIcon={<FilterIcon />}>
-          Filters
+        <Button
+          variant="outlined"
+          className="!bg-[#f4f6f5]  !border-[#17c2af] !rounded-full !text-black !font-bold !text-sm !px-6 !py-2 !shadow-none flex items-center gap-2"
+          startIcon={<FilterIcon className="text-[#17c2af]" />}>
+          <span className="mr-1 text-gray-600 text-sm">FILTERS</span>
+          <span className="bg-[#17c2af] text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
+            3
+          </span>
         </Button>
       </div>
 
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="work orders table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Donor</TableCell>
-              <TableCell>Panels</TableCell>
-              <TableCell>Barcode</TableCell>
-              <TableCell>Source</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Amount($)</TableCell>
-              <TableCell>Observed By</TableCell>
-              <TableCell>Status</TableCell>
-              <TableCell>Action</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {displayOrders.map((order) => (
-              <TableRow key={order.id} sx={{ "&:last-child td, &:last-child th": { border: 0 } }}>
-                <TableCell component="th" scope="row">
-                  {order.donor}
-                </TableCell>
-                <TableCell>{order.panels}</TableCell>
-                <TableCell>{order.barcode}</TableCell>
-                <TableCell>{order.source}</TableCell>
-                <TableCell>{order.date}</TableCell>
-                <TableCell>{order.amount}</TableCell>
-                <TableCell>{order.observedBy}</TableCell>
-                <TableCell>{order.status}</TableCell>
-                <TableCell>
-                  <IconButton aria-label="more" onClick={(e) => handleMenuClick(e, order.id)}>
-                    <MoreVertIcon />
-                  </IconButton>
-                </TableCell>
+      <Paper className="rounded-lg overflow-hidden">
+        <TableContainer>
+          <Table sx={{ minWidth: 650 }}>
+            <TableHead>
+              <TableRow className="!bg-[#f4f6f5]">
+                {['Donor', 'Panels', 'Barcode', 'Source', 'Date', 'Amount($)', 'Observed By', 'Status', 'Action'].map(header => (
+                  <TableCell key={header} className="!text-gray-600 !font-bold !text-sm whitespace-nowrap">{header}</TableCell>
+                ))}
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
 
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-        <MenuItem onClick={() => selectedOrderId && handleEdit(orders.find((o:any) => o.id === selectedOrderId)!)}>
-          Edit
-        </MenuItem>
-        <MenuItem onClick={() => selectedOrderId && handleDelete(selectedOrderId)}>Delete</MenuItem>
-      </Menu>
+            <TableBody>
+              {paginatedOrders.map((order: any) => (
+                <TableRow
+                  key={order.id}
+                  className={order.highlight ? 'bg-[#ffe7e7]' : ''}
+                >
+                  <TableCell className="text-[#17c2af] font-medium cursor-pointer hover:underline">
+                    {order.donor}
+                  </TableCell>
+                  <TableCell>{order.panels}</TableCell>
+                  <TableCell className="text-[#17c2af]">{order.barcode}</TableCell>
+                  <TableCell>{order.source}</TableCell>
+                  <TableCell>{order.date}</TableCell>
+                  <TableCell>{order.amount}</TableCell>
+                  <TableCell>{order.observedBy}</TableCell>
+                  <TableCell className="capitalize">{order.status}</TableCell>
+                  <TableCell>
+                    <IconButton onClick={(e) => handleMenuClick(e, order.id)}>
+                      <MoreVertIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+
+        {/* Pagination */}
+        <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-4">
+            <Pagination
+              count={Math.ceil(orders.length / rowsPerPage)}
+              page={page + 1}
+              onChange={(_: any, value: any) => setPage(value - 1)}
+              shape="rounded"
+              color="primary"
+              variant="outlined"
+              size="small"
+            />
+            <Select
+              value={rowsPerPage}
+              onChange={(e) => handleChangeRowsPerPage(e as any)}
+              size="small"
+              className="h-9 text-sm"
+              sx={{ minWidth: 80 }}
+            >
+              {[10, 25, 50].map((val) => (
+                <MenuItem key={val} value={val}>{val}</MenuItem>
+              ))}
+            </Select>
+            <span className="text-sm text-teal-600 font-medium">items per page</span>
+          </div>
+
+          <Typography variant="body2" className="text-sm text-teal-600 font-medium">
+            Showing {page * rowsPerPage + 1} -{' '}
+            {Math.min((page + 1) * rowsPerPage, orders.length)} of {orders.length}
+          </Typography>
+        </div>
+
+
+        {/* Menu Actions */}
+        <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
+          <MenuItem
+            onClick={() => {
+              if (selectedOrderId) {
+                const order = orders.find((o: any) => o.id === selectedOrderId);
+                if (order) handleEdit(order);
+              }
+            }}>
+            Edit
+          </MenuItem>
+          <MenuItem onClick={() => selectedOrderId && handleDelete(selectedOrderId)}>Delete</MenuItem>
+        </Menu>
+      </Paper>
 
       <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
         <DialogTitle>{currentOrder ? "Edit Work Order" : "Add Work Order"}</DialogTitle>
@@ -307,6 +331,6 @@ export default function WorkOrdersPage() {
           </Button>
         </DialogActions>
       </Dialog>
-    </div>
+    </div >
   )
 }

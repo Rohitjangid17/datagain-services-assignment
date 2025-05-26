@@ -1,19 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import {
-  Paper,
-  Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  TextField,
-  Button,
-  Radio,
-  RadioGroup,
-  FormControlLabel,
-} from "@mui/material"
+import { Paper, Typography, FormControl, InputLabel, Select, MenuItem, TextField, Button, Radio, RadioGroup, FormControlLabel, } from "@mui/material";
+import PageTitle from "@/shared/components/page-title";
 
 export default function ReportsPage() {
   const [reportType, setReportType] = useState("")
@@ -35,10 +24,8 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="p-6">
-      <div className="flex items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Reports</h1>
-      </div>
+    <div className="">
+      <PageTitle title="Add Work Order" />
 
       <Paper className="p-6">
         <div className="grid grid-cols-1 gap-6">

@@ -1,27 +1,37 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
+import { createSlice } from '@reduxjs/toolkit';
 
 interface SidebarState {
-    isExpanded: boolean
-    activeItem: string | null
+    isMainSidebarOpen: boolean;
+    showOverlay: boolean;
 }
 
 const initialState: SidebarState = {
-    isExpanded: true,
-    activeItem: null,
-}
+    isMainSidebarOpen: true,
+    showOverlay: false,
+};
 
 const sidebarSlice = createSlice({
-    name: "sidebar",
+    name: 'sidebar',
     initialState,
     reducers: {
-        toggleSidebar: (state) => {
-            state.isExpanded = !state.isExpanded
+        toggleMainSidebar: (state) => {
+            state.isMainSidebarOpen = !state.isMainSidebarOpen;
+            if (typeof window !== 'undefined' && window.innerWidth < 991) {
+                state.showOverlay = state.isMainSidebarOpen;
+            }
         },
-        setActiveItem: (state, action: PayloadAction<string | null>) => {
-            state.activeItem = action.payload
+        openMainSidebar: (state) => {
+            state.isMainSidebarOpen = true;
+            if (typeof window !== 'undefined' && window.innerWidth < 991) {
+                state.showOverlay = true;
+            }
+        },
+        closeMainSidebar: (state) => {
+            state.isMainSidebarOpen = false;
+            state.showOverlay = false;
         },
     },
-})
+});
 
-export const { toggleSidebar, setActiveItem } = sidebarSlice.actions
-export default sidebarSlice.reducer
+export const { toggleMainSidebar, openMainSidebar, closeMainSidebar } = sidebarSlice.actions;
+export default sidebarSlice.reducer;
