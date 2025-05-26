@@ -75,8 +75,9 @@ const WorkOrderDialog: React.FC<WorkOrderDialogProps> = ({
                 </div>
             </DialogContent>
             <DialogActions>
-                <Button onClick={onClose}>Cancel</Button>
-                <Button onClick={onSubmit} variant="contained" color="primary">
+                <Button onClick={onClose} variant="outlined"
+                    className="!bg-[#f4f6f5] !rounded-full !text-black !font-bold !border-black !text-sm !px-6 !py-2 !shadow-none">Cancel</Button>
+                <Button onClick={onSubmit} variant="contained"       className="!bg-[#17c2af] !rounded-full !text-white !font-bold !text-sm !px-6 !py-2 !shadow-none">
                     {isEdit ? "Update" : "Add"}
                 </Button>
             </DialogActions>

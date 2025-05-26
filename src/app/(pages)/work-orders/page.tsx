@@ -2,8 +2,8 @@
 
 import type React from "react"
 import { useState, useEffect } from "react"
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Menu, MenuItem, InputAdornment, TablePagination, Select, Typography, Pagination, } from "@mui/material"
-import { Add as AddIcon, Search as SearchIcon, FilterList as FilterIcon, MoreVert as MoreVertIcon, } from "@mui/icons-material"
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, IconButton, Menu, MenuItem, InputAdornment, Select, Typography, Pagination, } from "@mui/material"
+import { Search as SearchIcon, FilterList as FilterIcon, MoreVert as MoreVertIcon, } from "@mui/icons-material"
 import { addOrder, deleteOrder, filterOrders, updateOrder } from "@/lib/redux/slices/workOrdersSlice"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import PageTitle from "@/shared/components/page-title"
@@ -11,7 +11,7 @@ import { WorkOrder, WorkOrderFormData } from "@/shared/interfaces/common.type"
 import WorkOrderDialog from "@/shared/models/work-order-dialog"
 import { generateId } from "@/lib/utils/calendar-helpers"
 
-export default function WorkOrdersPage() {
+const WorkOrdersPage = () => {
   const dispatch = useAppDispatch()
   const { orders, filteredOrders, startDate, endDate } = useAppSelector((state) => state.workOrders)
 
@@ -36,19 +36,11 @@ export default function WorkOrdersPage() {
   })
 
   useEffect(() => {
-    // Filter orders based on search term
-    const filtered = filteredOrders.length > 0 ? filteredOrders : orders
-    if (searchTerm) {
-      setDisplayOrders(
-        filtered.filter((order: any) =>
-          Object.values(order).some((value: any) => value.toString().toLowerCase().includes(searchTerm.toLowerCase())),
-        ),
-      )
-    } else {
-      setDisplayOrders(filtered)
-    }
-  }, [orders, filteredOrders, searchTerm])
+    const filtered = filteredOrders.length > 0 ? filteredOrders : orders;
+    setDisplayOrders(filtered)
+  }, [orders, filteredOrders, searchTerm]);
 
+  // hanle model open
   const handleClickOpen = () => {
     setCurrentOrder(null)
     setFormData({
@@ -127,135 +119,166 @@ export default function WorkOrdersPage() {
     }
   }
 
-  const handleChangePage = (_event: unknown, newPage: number) => {
-    setPage(newPage);
-  };
+  // const handleChangePage = (_event: unknown, newPage: number) => {
+  //   setPage(newPage);
+  // };
 
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
-  };
+  }
 
-  const paginatedOrders = orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const searchOrdersData = () => {
+    const filtered = filteredOrders.length > 0 ? filteredOrders : orders
+    if (searchTerm.trim()) {
+      setDisplayOrders(
+        filtered.filter((order) =>
+          Object.values(order).some((value) =>
+            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+          )
+        )
+      )
+    } else {
+      setDisplayOrders(filtered)
+    }
+    setPage(0)
+  }
+
+  const paginatedOrders = displayOrders.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
 
   return (
     <>
       <PageTitle title="Work Orders" showButton onClick={handleClickOpen} buttonText="React Order" />
 
-      <div className="flex flex-wrap items-center gap-4 mb-6">
-        <div className="flex items-center">
-          <span className="mr-2 text-gray-600 font-bold">Date:</span>
-          <div className="flex items-center gap-x-1">
-            <span className="text-gray-600">06/01/2024</span>
-            <span className="text-gray-600">-</span>
-            <span className="text-gray-600">07/19/2024</span>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
+          <div className="text-gray-600 font-bold">Date:</div>
+          <div className="flex items-center gap-x-1 text-sm text-gray-600">
+            <span>06/01/2024</span>
+            <span>-</span>
+            <span>07/19/2024</span>
           </div>
         </div>
 
-        <div className="flex-grow"></div>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 w-full sm:w-auto">
+          <TextField
+            placeholder="Search..."
+            size="small"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon />
+                </InputAdornment>
+              ),
+            }}
+            className="w-full sm:w-64"
+          />
 
-        <TextField
-          placeholder="Search..."
-          size="small"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-          }}
-          className="w-64"
-        />
+          <Button variant="contained" onClick={searchOrdersData} className="!bg-[#17c2af] w-full sm:w-auto !rounded-full !text-white !font-bold !text-sm !px-6 !py-3 !shadow-none">
+            Search
+          </Button>
 
-        <Button variant="contained" className="!bg-[#17c2af] !rounded-full !text-white !font-bold !text-sm !px-6 !py-3 !shadow-none">
-          Search
-        </Button>
-
-        <Button
-          variant="outlined"
-          className="!bg-[#f4f6f5]  !border-[#17c2af] !rounded-full !text-black !font-bold !text-sm !px-6 !py-2 !shadow-none flex items-center gap-2"
-          startIcon={<FilterIcon className="text-[#17c2af]" />}>
-          <span className="mr-1 text-gray-600 text-sm">FILTERS</span>
-          <span className="bg-[#17c2af] text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
-            3
-          </span>
-        </Button>
+          <Button
+            variant="outlined"
+            className="w-full sm:w-auto !bg-[#f4f6f5]  !border-[#17c2af] !rounded-full !text-black !font-bold !text-sm !px-6 !py-2 !shadow-none flex items-center justify-between sm:justify-start gap-2"
+            startIcon={<FilterIcon className="text-[#17c2af]" />}>
+            <span className="text-gray-600 text-sm">FILTERS</span>
+            <span className="bg-[#17c2af] text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
+              3
+            </span>
+          </Button>
+        </div>
       </div>
 
       <Paper className="rounded-lg overflow-hidden">
-        <TableContainer>
-          <Table sx={{ minWidth: 650 }}>
-            <TableHead>
-              <TableRow className="!bg-[#f4f6f5]">
-                {['Donor', 'Panels', 'Barcode', 'Source', 'Date', 'Amount($)', 'Observed By', 'Status', 'Action'].map(header => (
-                  <TableCell key={header} className="!text-gray-600 !font-bold !text-sm whitespace-nowrap">{header}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-
-            <TableBody>
-              {paginatedOrders.map((order: any) => (
-                <TableRow
-                  key={order.id}
-                  className={order.highlight ? 'bg-[#ffe7e7]' : ''}
-                >
-                  <TableCell className="text-[#17c2af] font-medium cursor-pointer hover:underline">
-                    {order.donor}
-                  </TableCell>
-                  <TableCell>{order.panels}</TableCell>
-                  <TableCell className="text-[#17c2af]">{order.barcode}</TableCell>
-                  <TableCell>{order.source}</TableCell>
-                  <TableCell>{order.date}</TableCell>
-                  <TableCell>{order.amount}</TableCell>
-                  <TableCell>{order.observedBy}</TableCell>
-                  <TableCell className="capitalize">{order.status}</TableCell>
-                  <TableCell>
-                    <IconButton onClick={(e) => handleMenuClick(e, order.id)}>
-                      <MoreVertIcon />
-                    </IconButton>
-                  </TableCell>
+        <div className="overflow-x-auto">
+          <TableContainer>
+            <Table sx={{ minWidth: 650 }}>
+              <TableHead>
+                <TableRow className="!bg-[#f4f6f5]">
+                  {['Donor', 'Panels', 'Barcode', 'Source', 'Date', 'Amount($)', 'Observed By', 'Status', 'Action'].map(header => (
+                    <TableCell key={header} className="!text-gray-600 !font-bold !text-xs sm:!text-sm whitespace-nowrap">{header}</TableCell>
+                  ))}
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+              </TableHead>
+
+              <TableBody>
+                {paginatedOrders.map((order: any) => (
+                  <TableRow
+                    key={order.id}
+                    className={order.highlight ? 'bg-[#ffe7e7]' : ''}
+                  >
+                    <TableCell className="text-[#17c2af] font-medium cursor-pointer hover:underline text-xs sm:text-sm">
+                      {order.donor}
+                    </TableCell>
+                    <TableCell className="text-xs sm:text-sm">{order.panels}</TableCell>
+                    <TableCell className="text-[#17c2af] text-xs sm:text-sm">{order.barcode}</TableCell>
+                    <TableCell className="text-xs sm:text-sm">{order.source}</TableCell>
+                    <TableCell className="text-xs sm:text-sm whitespace-nowrap">{order.date}</TableCell>
+                    <TableCell className="text-xs sm:text-sm">{order.amount}</TableCell>
+                    <TableCell className="text-xs sm:text-sm">{order.observedBy}</TableCell>
+                    <TableCell className="capitalize text-xs sm:text-sm">{order.status}</TableCell>
+                    <TableCell>
+                      <IconButton onClick={(e) => handleMenuClick(e, order.id)} size="small">
+                        <MoreVertIcon fontSize="small" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-2 px-4 py-3">
+          <div className="flex items-center gap-2 flex-wrap">
             <Pagination
               count={Math.ceil(orders.length / rowsPerPage)}
               page={page + 1}
               onChange={(_: any, value: any) => setPage(value - 1)}
               shape="rounded"
-              color="primary"
               variant="outlined"
               size="small"
+              sx={{
+                "& .MuiPaginationItem-root": {
+                  color: "#17c2af",
+                  borderColor: "#17c2af",
+                },
+                "& .MuiPaginationItem-root.Mui-selected": {
+                  backgroundColor: "#17c2af",
+                  color: "#fff",
+                  borderColor: "#17c2af",
+                  "&:hover": {
+                    backgroundColor: "#17c2af",
+                    color: "#fff",
+                    borderColor: "#17c2af",
+                  },
+                },
+              }}
             />
             <Select
               value={rowsPerPage}
               onChange={(e) => handleChangeRowsPerPage(e as any)}
               size="small"
-              className="h-9 text-sm"
+              className="text-sm"
               sx={{ minWidth: 80 }}
             >
-              {[10, 25, 50].map((val) => (
+              {[5, 10, 25, 50].map((val) => (
                 <MenuItem key={val} value={val}>{val}</MenuItem>
               ))}
             </Select>
-            <span className="text-sm text-teal-600 font-medium">items per page</span>
+            <span className="text-sm text-[#17c2af] font-medium">items per page</span>
           </div>
 
-          <Typography variant="body2" className="text-sm text-teal-600 font-medium">
+          <Typography variant="body2" className="text-sm text-[#17c2af] font-medium text-center sm:text-left">
             Showing {page * rowsPerPage + 1} -{' '}
             {Math.min((page + 1) * rowsPerPage, orders.length)} of {orders.length}
           </Typography>
         </div>
 
-
-        {/* Menu Actions */}
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
           <MenuItem
             onClick={() => {
@@ -278,7 +301,8 @@ export default function WorkOrdersPage() {
         setFormData={setFormData}
         isEdit={!!currentOrder}
       />
-
     </>
   )
 }
+
+export default WorkOrdersPage;
