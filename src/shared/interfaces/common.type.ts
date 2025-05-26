@@ -71,3 +71,13 @@ export interface WorkOrderDialogProps {
     setFormData: React.Dispatch<React.SetStateAction<WorkOrderFormData>>
     isEdit: boolean
 }
+
+export interface SidebarItemProps {
+    icon: React.ReactNode;
+    label: string;
+    path?: string;
+    isActive?: boolean;
+    isExpanded?: boolean;
+    onClick?: () => void;
+    showChevron?: boolean;
+}

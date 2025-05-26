@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { Home, Payment, PowerSettingsNew, Face, CalendarMonth, ListAlt, Report, History, Work, } from '@mui/icons-material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import SidebarItem from './sidebar-item';
 
 const sidebarItems = [
     { icon: <Home />, label: 'Dashboard' },
@@ -47,19 +48,17 @@ const SidebarIconBar = () => {
             {/* Sidebar Items */}
             <div className="flex-1 flex flex-col items-start space-y-2 mt-4">
                 {sidebarItems.map(({ icon, label }, index) => (
-                    <button
+                    <SidebarItem
                         key={index}
+                        icon={icon}
+                        label={label}
+                        isActive={activeIndex === index}
+                        isExpanded={isExpanded}
                         onClick={() => handleClick(index)}
-                        className={`
-              flex items-center px-4 py-2 w-full transition-all
-              hover:bg-gray-100
-              ${activeIndex === index ? 'bg-[#dcf6f3] text-[#17c2af]' : 'text-gray-600'}
-            `}>
-                        <span>{icon}</span>
-                        {isExpanded && <span className="ml-3">{label}</span>}
-                    </button>
+                    />
                 ))}
             </div>
+
         </div>
     );
 }

@@ -2,10 +2,10 @@
 
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/lib/redux/store';
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Work, Report, CalendarMonth, ChevronRight, Close, } from '@mui/icons-material';
 import { closeMainSidebar } from '@/lib/redux/slices/sidebarSlice';
+import SidebarItem from './sidebar-item';
 
 const menuItems = [
   { name: 'Work Orders', icon: <Work />, path: '/work-orders' },
@@ -51,21 +51,13 @@ const SidebarMain = () => {
               const isActive = pathname === path;
               return (
                 <li key={index} onClick={() => dispatch(closeMainSidebar())}>
-                  <Link href={path} className="block">
-                    <div
-                      className={`
-                        flex items-center justify-between px-4 py-2 rounded-md cursor-pointer transition-all
-                        ${isActive
-                          ? 'bg-[#dcf6f3] text-[#17c2af] font-medium'
-                          : 'text-gray-800 hover:bg-gray-100'}
-                      `}>
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">{icon}</span>
-                        <span className="text-sm">{name}</span>
-                      </div>
-                      <ChevronRight fontSize="small" />
-                    </div>
-                  </Link>
+                  <SidebarItem
+                    icon={icon}
+                    label={name}
+                    path={path}
+                    isActive={isActive}
+                    showChevron
+                  />
                 </li>
               );
             })}
