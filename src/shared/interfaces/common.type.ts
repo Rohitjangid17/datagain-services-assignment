@@ -1,14 +1,14 @@
 export interface CalendarEvent {
-  id: string;
-  title: string;
-  date: string;
-  type: 'event' | 'reminder';
-  color: string;
+    id: string;
+    title: string;
+    date: string;
+    type: 'event' | 'reminder';
+    color: string;
 }
 
 export interface CalendarState {
-  events: CalendarEvent[];
-  selectedDate: string | null;
+    events: CalendarEvent[];
+    selectedDate: string | null;
 }
 
 export interface SidebarState {
@@ -42,7 +42,7 @@ export interface PageTitleProps {
     onClick?: () => void;
 }
 
-export interface EventDialogProps  {
+export interface EventDialogProps {
     open: boolean
     onClose: () => void
     onSubmit: () => void
@@ -59,4 +59,15 @@ export interface EventDialogProps  {
         color: string
     }>>
     currentEvent: CalendarEvent | null
+}
+
+export type WorkOrderFormData = Omit<WorkOrder, "id">
+
+export interface WorkOrderDialogProps {
+    open: boolean
+    onClose: () => void
+    onSubmit: () => void
+    formData: WorkOrderFormData
+    setFormData: React.Dispatch<React.SetStateAction<WorkOrderFormData>>
+    isEdit: boolean
 }

@@ -7,10 +7,9 @@ import { Add as AddIcon, Search as SearchIcon, FilterList as FilterIcon, MoreVer
 import { addOrder, deleteOrder, filterOrders, updateOrder } from "@/lib/redux/slices/workOrdersSlice"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import PageTitle from "@/shared/components/page-title"
-import { WorkOrder } from "@/shared/interfaces/common.type"
-
-// Simple ID generator
-const generateId = () => Math.random().toString(36).substr(2, 9)
+import { WorkOrder, WorkOrderFormData } from "@/shared/interfaces/common.type"
+import WorkOrderDialog from "@/shared/models/work-order-dialog"
+import { generateId } from "@/lib/utils/calendar-helpers"
 
 export default function WorkOrdersPage() {
   const dispatch = useAppDispatch()
@@ -25,7 +24,7 @@ export default function WorkOrdersPage() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<WorkOrderFormData>({
     donor: "",
     panels: "",
     barcode: "",
@@ -271,67 +270,15 @@ export default function WorkOrdersPage() {
         </Menu>
       </Paper>
 
-      <Dialog open={open} onClose={handleClose} maxWidth="md" fullWidth>
-        <DialogTitle>{currentOrder ? "Edit Work Order" : "Add Work Order"}</DialogTitle>
-        <DialogContent>
-          <div className="grid grid-cols-2 gap-4 mt-4">
-            <TextField
-              label="Donor"
-              fullWidth
-              value={formData.donor}
-              onChange={(e) => setFormData({ ...formData, donor: e.target.value })}
-            />
-            <TextField
-              label="Panels"
-              fullWidth
-              value={formData.panels}
-              onChange={(e) => setFormData({ ...formData, panels: e.target.value })}
-            />
-            <TextField
-              label="Barcode"
-              fullWidth
-              value={formData.barcode}
-              onChange={(e) => setFormData({ ...formData, barcode: e.target.value })}
-            />
-            <TextField
-              label="Source"
-              fullWidth
-              value={formData.source}
-              onChange={(e) => setFormData({ ...formData, source: e.target.value })}
-            />
-            <TextField
-              label="Date"
-              fullWidth
-              value={formData.date}
-              onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-            />
-            <TextField
-              label="Amount"
-              fullWidth
-              value={formData.amount}
-              onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-            />
-            <TextField
-              label="Observed By"
-              fullWidth
-              value={formData.observedBy}
-              onChange={(e) => setFormData({ ...formData, observedBy: e.target.value })}
-            />
-            <TextField
-              label="Status"
-              fullWidth
-              value={formData.status}
-              onChange={(e) => setFormData({ ...formData, status: e.target.value })}
-            />
-          </div>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSubmit} variant="contained" color="primary">
-            {currentOrder ? "Update" : "Add"}
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <WorkOrderDialog
+        open={open}
+        onClose={handleClose}
+        onSubmit={handleSubmit}
+        formData={formData}
+        setFormData={setFormData}
+        isEdit={!!currentOrder}
+      />
+
     </>
   )
 }
