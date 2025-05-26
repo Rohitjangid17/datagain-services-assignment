@@ -19,7 +19,7 @@ const sidebarItems = [
     { icon: <PowerSettingsNew />, label: 'Logout' },
 ];
 
-export default function SidebarIconBar() {
+const SidebarIconBar = () => {
     const dispatch = useDispatch();
     const [isExpanded, setIsExpanded] = useState(false);
     const [activeIndex, setActiveIndex] = useState<number>(0);
@@ -63,3 +63,5 @@ export default function SidebarIconBar() {
         </div>
     );
 }
+
+export default SidebarIconBar;
