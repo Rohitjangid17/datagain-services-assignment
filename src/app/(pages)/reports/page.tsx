@@ -24,8 +24,8 @@ export default function ReportsPage() {
   }
 
   return (
-    <div className="">
-      <PageTitle title="Add Work Order" />
+    <>
+      <PageTitle title="Reports" />
 
       <Paper className="p-6">
         <div className="grid grid-cols-1 gap-6">
@@ -104,6 +104,6 @@ export default function ReportsPage() {
           </div>
         </div>
       </Paper>
-    </div>
+    </>
   )
 }

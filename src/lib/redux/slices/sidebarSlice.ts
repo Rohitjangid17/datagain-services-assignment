@@ -1,9 +1,5 @@
+import { SidebarState } from '@/shared/interfaces/common.type';
 import { createSlice } from '@reduxjs/toolkit';
-
-interface SidebarState {
-    isMainSidebarOpen: boolean;
-    showOverlay: boolean;
-}
 
 const initialState: SidebarState = {
     isMainSidebarOpen: true,

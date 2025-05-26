@@ -1,13 +1,7 @@
 import { Button } from "@mui/material";
-import AddIcon from "@mui/icons-material/Add"; // Make sure this is imported
+import AddIcon from "@mui/icons-material/Add";
 import React from "react";
-
-interface PageTitleProps {
-    title: string;
-    showButton?: boolean;
-    buttonText?: string;
-    onClick?: () => void;
-}
+import { PageTitleProps } from "../interfaces/common.type";
 
 const PageTitle = ({ title, showButton = false, buttonText = "React Order", onClick }: PageTitleProps) => {
     return (

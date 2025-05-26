@@ -3,38 +3,9 @@
 import type React from "react"
 import { useState } from "react"
 import { useAppSelector, useAppDispatch } from "@/lib/redux/hooks"
-import {
-    addEvent,
-    updateEvent,
-    deleteEvent,
-    setSelectedDate,
-    type CalendarEvent,
-} from "@/lib/redux/slices/calendarSlice"
-import {
-    Button,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogTitle,
-    TextField,
-    Select,
-    MenuItem,
-    FormControl,
-    InputLabel,
-    Typography,
-    Paper,
-    IconButton,
-    Menu,
-} from "@mui/material"
-import {
-    Add as AddIcon,
-    ChevronLeft,
-    ChevronRight,
-    Print as PrintIcon,
-    FileDownload as FileDownloadIcon,
-    Delete as DeleteIcon,
-    Refresh as RefreshIcon,
-} from "@mui/icons-material"
+import { addEvent, updateEvent, deleteEvent, setSelectedDate, type CalendarEvent, } from "@/lib/redux/slices/calendarSlice";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Select, MenuItem, FormControl, InputLabel, Typography, Paper, IconButton, Menu, } from "@mui/material";
+import { Add as AddIcon, ChevronLeft, ChevronRight, Print as PrintIcon, FileDownload as FileDownloadIcon, Delete as DeleteIcon, Refresh as RefreshIcon, } from "@mui/icons-material";
 import PageTitle from "@/shared/components/page-title"
 
 // Simple ID generator
@@ -57,11 +28,11 @@ const formatDate = (year: number, month: number, day: number) => {
 
 export default function CalendarPage() {
     const dispatch = useAppDispatch()
-    const { events, selectedDate } = useAppSelector((state) => state.calendar)
+    const { events, selectedDate } = useAppSelector((state) => state.calendar);
 
-    const [currentDate, setCurrentDate] = useState(new Date())
-    const [open, setOpen] = useState(false)
-    const [eventType, setEventType] = useState<"event" | "reminder">("event")
+    const [currentDate, setCurrentDate] = useState(new Date());
+    const [open, setOpen] = useState<boolean>(false);
+    const [eventType, setEventType] = useState<"event" | "reminder">("event");
     const [currentEvent, setCurrentEvent] = useState<CalendarEvent | null>(null)
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
 
@@ -80,20 +51,7 @@ export default function CalendarPage() {
     const daysInMonth = getDaysInMonth(year, month)
     const firstDayOfWeek = getDayOfWeek(year, month, 1)
 
-    const monthNames = [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-    ]
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December",]
 
     const handlePrevMonth = () => {
         setCurrentDate(new Date(year, month - 1, 1))
@@ -246,7 +204,7 @@ export default function CalendarPage() {
     }
 
     return (
-        <div className="">
+        <>
             <PageTitle title="Calendar" />
 
             <Paper className="p-4 mb-6">
@@ -387,6 +345,6 @@ export default function CalendarPage() {
                     </Button>
                 </DialogActions>
             </Dialog>
-        </div>
+        </>
     )
 }

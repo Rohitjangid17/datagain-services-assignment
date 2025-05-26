@@ -1,18 +1,8 @@
 
+import { CalendarEvent, CalendarState } from "@/shared/interfaces/common.type"
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
 
-export interface CalendarEvent {
-    id: string
-    title: string
-    date: string
-    type: "event" | "reminder"
-    color: string
-}
 
-interface CalendarState {
-    events: CalendarEvent[]
-    selectedDate: string | null
-}
 
 const initialState: CalendarState = {
     events: [

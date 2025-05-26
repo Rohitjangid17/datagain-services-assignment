@@ -1,23 +1,5 @@
+import { WorkOrder, WorkOrdersState } from "@/shared/interfaces/common.type"
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
-
-export interface WorkOrder {
-    id: string
-    donor: string
-    panels: string
-    barcode: string
-    source: string
-    date: string
-    amount: string
-    observedBy: string
-    status: string
-}
-
-interface WorkOrdersState {
-    orders: WorkOrder[]
-    filteredOrders: WorkOrder[]
-    startDate: string
-    endDate: string
-}
 
 const initialState: WorkOrdersState = {
     orders: [

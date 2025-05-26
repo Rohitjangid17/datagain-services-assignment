@@ -1,18 +1,14 @@
 "use client"
-import { useAppSelector } from "@/lib/redux/hooks"
+import PageTitle from "@/shared/components/page-title"
 import { Card, CardContent, Typography } from "@mui/material"
 
 export default function Home() {
-  const { isExpanded } = useAppSelector((state) => state.sidebar)
-
   return (
-    <div className="p-6">
-      <div className="flex items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Home</h1>
-      </div>
+    <>
+      <PageTitle title="Home" />
 
-      <div className="flex flex-wrap gap-4">
-        <Card sx={{ minWidth: 275, maxWidth: 400 }}>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <Card className="w-full">
           <CardContent>
             <Typography variant="h5" component="div" gutterBottom>
               Welcome to LIMS
@@ -23,7 +19,7 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        <Card sx={{ minWidth: 275, maxWidth: 400 }}>
+        <Card className="w-full">
           <CardContent>
             <Typography variant="h5" component="div" gutterBottom>
               Quick Stats
@@ -36,7 +32,7 @@ export default function Home() {
             </Typography>
           </CardContent>
         </Card>
-      </div>
-    </div>
+      </div >
+    </>
   )
 }

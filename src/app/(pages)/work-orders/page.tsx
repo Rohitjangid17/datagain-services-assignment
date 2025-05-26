@@ -4,9 +4,10 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Menu, MenuItem, InputAdornment, TablePagination, Select, Typography, Pagination, } from "@mui/material"
 import { Add as AddIcon, Search as SearchIcon, FilterList as FilterIcon, MoreVert as MoreVertIcon, } from "@mui/icons-material"
-import { addOrder, deleteOrder, filterOrders, updateOrder, WorkOrder } from "@/lib/redux/slices/workOrdersSlice"
+import { addOrder, deleteOrder, filterOrders, updateOrder } from "@/lib/redux/slices/workOrdersSlice"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import PageTitle from "@/shared/components/page-title"
+import { WorkOrder } from "@/shared/interfaces/common.type"
 
 // Simple ID generator
 const generateId = () => Math.random().toString(36).substr(2, 9)
@@ -139,7 +140,7 @@ export default function WorkOrdersPage() {
   const paginatedOrders = orders.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
-    <div className="">
+    <>
       <PageTitle title="Work Orders" showButton onClick={handleClickOpen} buttonText="React Order" />
 
       <div className="flex flex-wrap items-center gap-4 mb-6">
@@ -331,6 +332,6 @@ export default function WorkOrdersPage() {
           </Button>
         </DialogActions>
       </Dialog>
-    </div >
+    </>
   )
 }
