@@ -13,7 +13,7 @@ const menuItems = [
   { name: 'Calendar', icon: <CalendarMonth />, path: '/calendar' },
 ];
 
-export default function SidebarMain() {
+const SidebarMain = () => {
   const isOpen = useSelector((state: RootState) => state.sidebar.isMainSidebarOpen);
   const pathname = usePathname();
   const dispatch = useDispatch();
@@ -50,7 +50,7 @@ export default function SidebarMain() {
             {menuItems.map(({ name, icon, path }, index) => {
               const isActive = pathname === path;
               return (
-                <li key={index}>
+                <li key={index} onClick={() => dispatch(closeMainSidebar())}>
                   <Link href={path} className="block">
                     <div
                       className={`
@@ -75,3 +75,5 @@ export default function SidebarMain() {
     </div>
   );
 }
+
+export default SidebarMain;
