@@ -89,16 +89,14 @@ export default function ReportsPage() {
           </div>
 
           <div className="w-full">
-            <Typography variant="subtitle1" gutterBottom>
-              Use Date
-            </Typography>
+            <Typography variant="subtitle1" className="!font-bold" gutterBottom>Use Date</Typography>
             <RadioGroup row value={useDate} onChange={(e) => setUseDate(e.target.value)}>
-              <FormControlLabel value="collected" control={<Radio color="primary" />} label="Collected" />
+              <FormControlLabel value="collected" control={<Radio sx={{ color: '#17c2af', '&.Mui-checked': { color: '#17c2af', }, }} />} label="Collected" />
             </RadioGroup>
           </div>
 
           <div className="w-full flex justify-end">
-            <Button variant="contained" color="primary" onClick={handleSubmit} size="large">
+            <Button variant="contained" className="!bg-[#17c2af] !rounded-full !text-white !font-bold !text-sm !px-6 !py-3 !shadow-none" onClick={handleSubmit} size="large">
               Submit
             </Button>
           </div>
