@@ -59,6 +59,13 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
         },
     })
 
+    // Helper for required label with red asterisk
+    const requiredLabel = (labelText: string) => (
+        <>
+            {labelText} <span style={{ color: "red" }}>*</span>
+        </>
+    )
+
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle>Filter</DialogTitle>
@@ -66,7 +73,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                 <DialogContent>
                     <div className="grid grid-cols-2 gap-4 mt-4">
                         <TextField
-                            label="Start Date"
+                            label={requiredLabel("Start Date")}
                             type="date"
                             fullWidth
                             InputLabelProps={{ shrink: true }}
@@ -78,7 +85,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
                             helperText={formik.touched.startDate && formik.errors.startDate}
                         />
                         <TextField
-                            label="End Date"
+                            label={requiredLabel("End Date")}
                             type="date"
                             fullWidth
                             InputLabelProps={{ shrink: true }}

@@ -86,7 +86,7 @@ const CalendarPage = () => {
         setCurrentEvent(null)
         setFormData({
             title: "",
-            date: selectedDay || "",
+            date: "",
             type,
             color: type === "event" ? "blue" : "orange",
         })
