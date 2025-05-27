@@ -36,12 +36,13 @@ const WorkOrderDialog: React.FC<WorkOrderDialogProps> = ({
     })
 
     const formik = useFormik({
-        enableReinitialize: true, // important to reset form when formData changes
+        enableReinitialize: true,
         initialValues: formData,
         validationSchema,
         onSubmit: (values) => {
-            setFormData(values) // update the parent's formData if needed
-            onSubmit() // call parent's submit handler
+            console.log(values)
+            setFormData(values)
+            onSubmit(values)
         },
     })
 

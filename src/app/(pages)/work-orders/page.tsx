@@ -95,11 +95,11 @@ const WorkOrdersPage = () => {
     setOpen(true)
   }
 
-  const handleSubmit = () => {
+  const handleSubmit = (workOrder: WorkOrderFormData) => {
     if (currentOrder) {
-      dispatch(updateOrder({ ...currentOrder, ...formData }))
+      dispatch(updateOrder({ ...currentOrder, ...workOrder }))
     } else {
-      dispatch(addOrder({ id: generateId(), ...formData }))
+      dispatch(addOrder({ id: generateId(), ...workOrder }))
     }
     setOpen(false)
   }

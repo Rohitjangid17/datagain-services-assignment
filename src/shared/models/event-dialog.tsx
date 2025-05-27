@@ -53,7 +53,7 @@ const EventDialog: React.FC<EventDialogProps> = ({
         validationSchema,
         onSubmit: (values) => {
             setFormData(values)
-            onSubmit()
+            onSubmit(values)
         },
     })
 

@@ -1,5 +1,5 @@
 export interface CalendarEvent {
-    id: string;
+    id?: string;
     title: string;
     date: string;
     type: 'event' | 'reminder';
@@ -45,7 +45,7 @@ export interface PageTitleProps {
 export interface EventDialogProps {
     open: boolean
     onClose: () => void
-    onSubmit: () => void
+    onSubmit: (event: CalendarEvent) => void
     formData: {
         title: string
         date: string
@@ -66,7 +66,7 @@ export type WorkOrderFormData = Omit<WorkOrder, "id">
 export interface WorkOrderDialogProps {
     open: boolean
     onClose: () => void
-    onSubmit: () => void
+    onSubmit: (workOrder: WorkOrderFormData) => void
     formData: WorkOrderFormData
     setFormData: React.Dispatch<React.SetStateAction<WorkOrderFormData>>
     isEdit: boolean

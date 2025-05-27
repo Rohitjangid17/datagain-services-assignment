@@ -86,7 +86,7 @@ const CalendarPage = () => {
         setCurrentEvent(null)
         setFormData({
             title: "",
-            date: "",
+            date: selectedDay ?? "",
             type,
             color: type === "event" ? "blue" : "orange",
         })
@@ -98,11 +98,11 @@ const CalendarPage = () => {
     const handleClose = () => setOpen(false)
 
     // add event and remonder
-    const addEventReminder = () => {
+    const addEventReminder = (eventRemider: CalendarEvent) => {
         if (currentEvent) {
-            dispatch(updateEvent({ ...currentEvent, ...formData }))
+            dispatch(updateEvent({ ...currentEvent, ...eventRemider }))
         } else {
-            dispatch(addEvent({ id: generateId(), ...formData }))
+            dispatch(addEvent({ id: generateId(), ...eventRemider }))
         }
         setOpen(false)
     }
@@ -131,10 +131,10 @@ const CalendarPage = () => {
 
     // event delete
     const eventDelete = () => {
-        if (currentEvent) {
-            dispatch(deleteEvent(currentEvent.id))
+        if (currentEvent && currentEvent.id) {
+            dispatch(deleteEvent(currentEvent.id));
         }
-        handleMenuClose()
+        handleMenuClose();
     }
 
     // calendar rows generate

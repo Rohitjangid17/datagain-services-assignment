@@ -34,9 +34,9 @@ const initialState: WorkOrdersState = {
         { id: "WO229", donor: "Preeti Nair", panels: "Panel C29", barcode: "IN2829303132", source: "Nagpur Hub", date: "2025-05-18", amount: "6300", observedBy: "Ajay Verma", status: "Unable to Donate" },
         { id: "WO230", donor: "Rajiv Malhotra", panels: "Panel D30", barcode: "IN2930313233", source: "Surat Hub", date: "2025-05-20", amount: "7000", observedBy: "Nidhi Gupta", status: "Refused" },
     ],
-filteredOrders: [],
+    filteredOrders: [],
     startDate: "06/01/2023",
-        endDate: "7/19/2023",
+    endDate: "7/19/2023",
 }
 
 const workOrdersSlice = createSlice({
@@ -48,6 +48,7 @@ const workOrdersSlice = createSlice({
             state.filteredOrders = action.payload
         },
         addOrder: (state, action: PayloadAction<WorkOrder>) => {
+            console.log("add")
             state.orders.push(action.payload)
             state.filteredOrders = state.orders
         },
@@ -63,6 +64,7 @@ const workOrdersSlice = createSlice({
             state.filteredOrders = state.orders
         },
         filterOrders: (state, action: PayloadAction<{ startDate: string; endDate: string }>) => {
+            console.log("filter data");
             state.startDate = action.payload.startDate
             state.endDate = action.payload.endDate
             state.filteredOrders = state.orders.filter(
