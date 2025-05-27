@@ -1,7 +1,7 @@
 "use client"
 
 import type React from "react"
-import { useState, useMemo } from "react"
+import { useState, useMemo, useEffect } from "react"
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
   Button, TextField, IconButton, Menu, MenuItem, InputAdornment, Select,
@@ -82,6 +82,12 @@ const WorkOrdersPage = () => {
       dateFilteredCount,
     };
   }, [orders, filterData.startDate, filterData.endDate, appliedSearchTerm]);
+
+  useEffect(() => {
+    if (searchTerm.trim() === "") {
+      setAppliedSearchTerm("");
+    }
+  }, [searchTerm]);
 
   const paginatedOrders = displayOrders.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
 
@@ -191,8 +197,13 @@ const WorkOrdersPage = () => {
           <Button
             variant="contained"
             onClick={() => {
-              setAppliedSearchTerm(searchTerm)
-              setPage(0)
+              setAppliedSearchTerm(searchTerm.trim());
+              setPage(0);
+
+              // 🧠 If the search box is empty, show all results
+              if (searchTerm.trim() === "") {
+                setAppliedSearchTerm("");
+              }
             }}
             className="!bg-[#17c2af] w-full sm:w-auto !rounded-full !text-white !font-bold !text-sm !px-6 !py-3 !shadow-none">
             Search
