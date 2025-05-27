@@ -5,7 +5,8 @@ import { useState, useMemo } from "react"
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
   Button, TextField, IconButton, Menu, MenuItem, InputAdornment, Select,
-  Typography, Pagination
+  Typography, Pagination,
+  SelectChangeEvent
 } from "@mui/material"
 import {
   Search as SearchIcon,
@@ -123,7 +124,7 @@ const WorkOrdersPage = () => {
     setSelectedOrderId(null)
   }
 
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChangeRowsPerPage = (event: SelectChangeEvent) => {
     setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
@@ -204,8 +205,9 @@ const WorkOrdersPage = () => {
               </TableHead>
 
               <TableBody>
-                {paginatedOrders.map((order: any) => (
-                  <TableRow key={order.id} className={order.highlight ? 'bg-[#ffe7e7]' : ''}>
+                {paginatedOrders.map((order) => (
+                  <TableRow key={order.id}>
+                    {/* className="bg-[#ffe7e7]" */}
                     <TableCell className="!text-[#17c2af] font-medium cursor-pointer hover:underline text-xs sm:text-sm">
                       {order.donor}
                     </TableCell>
@@ -255,8 +257,8 @@ const WorkOrdersPage = () => {
               }}
             />
             <Select
-              value={rowsPerPage}
-              onChange={(e) => handleChangeRowsPerPage(e as any)}
+              value={rowsPerPage.toString()}
+              onChange={(e: SelectChangeEvent) => handleChangeRowsPerPage(e)}
               size="small"
               className="text-sm"
               sx={{ minWidth: 80 }}
@@ -276,7 +278,7 @@ const WorkOrdersPage = () => {
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
           <MenuItem onClick={() => {
             if (selectedOrderId) {
-              const order = orders.find((o: any) => o.id === selectedOrderId);
+              const order = orders.find((o) => o.id === selectedOrderId);
               if (order) updateWorkOrder(order);
             }
           }}>Edit</MenuItem>
