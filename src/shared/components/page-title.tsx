@@ -5,7 +5,7 @@ import { PageTitleProps } from "../interfaces/common.type";
 
 const PageTitle = ({ title, showButton = false, buttonText = "React Order", onClick }: PageTitleProps) => {
     return (
-        <div className="flex items-center gap-x-4 mb-6">
+        <div className="flex items-cente justify-between gap-x-4 mb-6">
             <h1 className="text-base sm:text-2xl font-bold text-gray-800">{title}</h1>
             {showButton && (
                 <Button

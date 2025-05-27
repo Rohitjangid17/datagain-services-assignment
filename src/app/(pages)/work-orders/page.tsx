@@ -156,7 +156,7 @@ const WorkOrdersPage = () => {
 
   return (
     <>
-      <PageTitle title="Work Orders" showButton onClick={handleClickOpen} buttonText="React Order" />
+      <PageTitle title="Work Orders" showButton onClick={handleClickOpen} buttonText="Creact Order" />
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
