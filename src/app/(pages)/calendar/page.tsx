@@ -37,7 +37,7 @@ const CalendarPage = () => {
 
     const [currentDate, setCurrentDate] = useState(new Date())
     const [open, setOpen] = useState(false)
-    const [eventType, setEventType] = useState<"event" | "reminder">("event")
+    // const [eventType, setEventType] = useState<"event" | "reminder">("event")
     const [currentEvent, setCurrentEvent] = useState<CalendarEvent | null>(null)
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
     const [addMenuAnchorEl, setAddMenuAnchorEl] = useState<null | HTMLElement>(null)
@@ -82,7 +82,7 @@ const CalendarPage = () => {
 
     // handle add event and reminder
     const handleAddEvent = (type: "event" | "reminder") => {
-        setEventType(type)
+        // setEventType(type)
         setCurrentEvent(null)
         setFormData({
             title: "",
