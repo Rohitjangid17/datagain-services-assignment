@@ -148,7 +148,8 @@ const WorkOrdersPage = () => {
     setPage(0)
   }
 
-  const handleFilterApply = () => {
+  // filter apply
+  const filterApply = () => {
     dispatch(filterOrders(filterData))
     setFilterDialogOpen(false)
   }
@@ -315,7 +316,7 @@ const WorkOrdersPage = () => {
       <FilterDialog
         open={filterDialogOpen}
         onClose={() => setFilterDialogOpen(false)}
-        onFilter={handleFilterApply}
+        onFilter={filterApply}
         filterData={filterData}
         setFilterData={setFilterData}
       />
