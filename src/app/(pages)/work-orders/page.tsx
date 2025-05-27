@@ -147,8 +147,8 @@ const WorkOrdersPage = () => {
   }
 
   // Apply filter when user clicks apply button
-  const filterApply = () => {
-    setFilterData(localFilterData);
+  const filterApply = (values: { startDate: string; endDate: string }) => {
+    setFilterData(values);
     setPage(0);
     setFilterDialogOpen(false);
     setLocalFilterData({ startDate: "", endDate: "" });

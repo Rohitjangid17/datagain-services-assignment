@@ -85,7 +85,7 @@ export interface SidebarItemProps {
 export interface FilterDialogProps {
     open: boolean
     onClose: () => void
-    onFilter: () => void
+    onFilter: (data: { startDate: string; endDate: string }) => void;
     filterData: {
         startDate: string
         endDate: string

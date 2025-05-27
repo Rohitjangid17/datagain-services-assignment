@@ -55,7 +55,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
         validationSchema,
         onSubmit: (values) => {
             setFilterData(values)
-            onFilter()
+            onFilter(values)
         },
     })
 
