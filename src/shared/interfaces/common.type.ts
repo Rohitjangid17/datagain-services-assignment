@@ -81,3 +81,14 @@ export interface SidebarItemProps {
     onClick?: () => void;
     showChevron?: boolean;
 }
+
+export interface FilterDialogProps {
+    open: boolean
+    onClose: () => void
+    onFilter: () => void
+    filterData: {
+        startDate: string
+        endDate: string
+    }
+    setFilterData: (data: { startDate: string; endDate: string }) => void
+}

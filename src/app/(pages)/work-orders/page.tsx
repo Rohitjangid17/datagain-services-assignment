@@ -10,6 +10,7 @@ import PageTitle from "@/shared/components/page-title"
 import { WorkOrder, WorkOrderFormData } from "@/shared/interfaces/common.type"
 import WorkOrderDialog from "@/shared/models/work-order-dialog"
 import { generateId } from "@/lib/utils/calendar-helpers"
+import FilterDialog from "@/shared/models/filter-dialog"
 
 const WorkOrdersPage = () => {
   const dispatch = useAppDispatch()
@@ -23,6 +24,9 @@ const WorkOrdersPage = () => {
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const [filterDialogOpen, setFilterDialogOpen] = useState(false)
+  const [filterData, setFilterData] = useState({ startDate: "", endDate: "" })
 
   const [formData, setFormData] = useState<WorkOrderFormData>({
     donor: "",
@@ -144,6 +148,11 @@ const WorkOrdersPage = () => {
     setPage(0)
   }
 
+  const handleFilterApply = () => {
+    dispatch(filterOrders(filterData))
+    setFilterDialogOpen(false)
+  }
+
   const paginatedOrders = displayOrders.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
 
   return (
@@ -182,6 +191,7 @@ const WorkOrdersPage = () => {
 
           <Button
             variant="outlined"
+            onClick={() => setFilterDialogOpen(true)}
             className="w-full sm:w-auto !bg-[#f4f6f5]  !border-[#17c2af] !rounded-full !text-black !font-bold !text-sm !px-6 !py-2 !shadow-none flex items-center justify-between sm:justify-start gap-2"
             startIcon={<FilterIcon className="text-[#17c2af]" />}>
             <span className="text-gray-600 text-sm">FILTERS</span>
@@ -301,6 +311,15 @@ const WorkOrdersPage = () => {
         setFormData={setFormData}
         isEdit={!!currentOrder}
       />
+
+      <FilterDialog
+        open={filterDialogOpen}
+        onClose={() => setFilterDialogOpen(false)}
+        onFilter={handleFilterApply}
+        filterData={filterData}
+        setFilterData={setFilterData}
+      />
+
     </>
   )
 }
