@@ -284,9 +284,10 @@ const CalendarPage = () => {
                     </IconButton>
                 </div>
 
-                <Typography variant="h5" className="!font-bold !text-black">
+                <Typography variant="h5" className="!text-xl !sm:text-sm !font-bold !text-black">
                     {monthNames[month]} {year}
                 </Typography>
+
 
                 <div className="flex">
                     <Button variant="contained" className="!border !border-solid !border-gray-200 !rounded-none !px-2 !py-[1px] !bg-gray-100 !text-gray-400 !capitalize !shadow-none">Month</Button>
