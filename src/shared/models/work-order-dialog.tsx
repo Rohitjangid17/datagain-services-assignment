@@ -7,7 +7,7 @@ import {
     DialogContent,
     DialogActions,
     TextField,
-    Button,
+    Button, MenuItem, Select, InputLabel, FormControl, FormHelperText
 } from "@mui/material"
 import { WorkOrderDialogProps } from "@/shared/interfaces/common.type"
 import { useFormik } from "formik"
@@ -139,16 +139,25 @@ const WorkOrderDialog: React.FC<WorkOrderDialogProps> = ({
                             error={formik.touched.observedBy && Boolean(formik.errors.observedBy)}
                             helperText={formik.touched.observedBy && formik.errors.observedBy}
                         />
-                        <TextField
-                            label={requiredLabel("Status")}
-                            fullWidth
-                            name="status"
-                            value={formik.values.status}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            error={formik.touched.status && Boolean(formik.errors.status)}
-                            helperText={formik.touched.status && formik.errors.status}
-                        />
+                        <FormControl fullWidth error={formik.touched.status && Boolean(formik.errors.status)}>
+                            <InputLabel>{requiredLabel("Status")}</InputLabel>
+                            <Select
+                                name="status"
+                                value={formik.values.status}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                                label="Status"
+                            >
+                                {["Unable to Donate", "Refused", "Duplicate/Error", "Insufficient Donation", "Approved", "Pending"].map((status) => (
+                                    <MenuItem key={status} value={status}>
+                                        {status}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                            {formik.touched.status && formik.errors.status && (
+                                <FormHelperText>{formik.errors.status}</FormHelperText>
+                            )}
+                        </FormControl>
                     </div>
 
                     <DialogActions>
