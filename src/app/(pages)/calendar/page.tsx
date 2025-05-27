@@ -3,13 +3,12 @@
 import type React from "react"
 import { useState } from "react"
 import { useAppSelector, useAppDispatch } from "@/lib/redux/hooks"
-import { addEvent, updateEvent, deleteEvent, setSelectedDate } from "@/lib/redux/slices/calendarSlice"
+import { addEvent, updateEvent, deleteEvent } from "@/lib/redux/slices/calendarSlice"
 import {
     Button,
     TextField,
     MenuItem,
     Typography,
-    Paper,
     IconButton,
     Menu,
     Divider,
