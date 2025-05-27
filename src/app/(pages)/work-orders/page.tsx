@@ -230,7 +230,7 @@ const WorkOrdersPage = () => {
                     <TableCell className="text-xs sm:text-sm whitespace-nowrap">{order.date}</TableCell>
                     <TableCell className="text-xs sm:text-sm">{order.amount}</TableCell>
                     <TableCell className="text-xs sm:text-sm">{order.observedBy}</TableCell>
-                    <TableCell className="capitalize text-xs sm:text-sm">{order.status}</TableCell>
+                    <TableCell className="capitalize text-xs sm:text-sm whitespace-nowrap">{order.status}</TableCell>
                     <TableCell>
                       <IconButton onClick={(e) => handleMenuClick(e, order.id)} size="small">
                         <MoreVertIcon fontSize="small" />
