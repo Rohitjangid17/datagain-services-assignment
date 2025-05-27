@@ -45,7 +45,7 @@ const WorkOrdersPage = () => {
 
   const [formData, setFormData] = useState<WorkOrderFormData>({
     donor: "", panels: "", barcode: "", source: "",
-    date: new Date().toISOString().split("T")[0],
+    date: "",
     amount: "", observedBy: "", status: ""
   });
 
@@ -89,7 +89,7 @@ const WorkOrdersPage = () => {
     setCurrentOrder(null)
     setFormData({
       donor: "", panels: "", barcode: "", source: "",
-      date: new Date().toISOString().split("T")[0],
+      date: "",
       amount: "", observedBy: "", status: ""
     })
     setOpen(true)
