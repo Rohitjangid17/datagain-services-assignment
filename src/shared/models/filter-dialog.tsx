@@ -12,7 +12,7 @@ const FilterDialog: React.FC<FilterDialogProps> = ({
 }) => {
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>Filter by Date Range</DialogTitle>
+            <DialogTitle>Filter</DialogTitle>
             <DialogContent>
                 <div className="grid grid-cols-2 gap-4 mt-4">
                     <TextField
