@@ -228,7 +228,7 @@ const WorkOrdersPage = () => {
                     <TableCell className="!text-[#17c2af] text-xs sm:text-sm">{order.barcode}</TableCell>
                     <TableCell className="text-xs sm:text-sm">{order.source}</TableCell>
                     <TableCell className="text-xs sm:text-sm whitespace-nowrap">{order.date}</TableCell>
-                    <TableCell className="text-xs sm:text-sm">{order.amount}</TableCell>
+                    <TableCell className="text-xs sm:text-sm">${order.amount}</TableCell>
                     <TableCell className="text-xs sm:text-sm">{order.observedBy}</TableCell>
                     <TableCell className="capitalize text-xs sm:text-sm whitespace-nowrap">{order.status}</TableCell>
                     <TableCell>
