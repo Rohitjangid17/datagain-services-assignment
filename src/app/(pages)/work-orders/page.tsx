@@ -14,14 +14,14 @@ import {
   MoreVert as MoreVertIcon
 } from "@mui/icons-material"
 import {
-  addOrder, deleteOrder, updateOrder, setFilterDate
+  addOrder, deleteOrder, updateOrder
 } from "@/lib/redux/slices/workOrdersSlice"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import PageTitle from "@/shared/components/page-title"
 import { WorkOrder, WorkOrderFormData } from "@/shared/interfaces/common.type"
-import WorkOrderDialog from "@/shared/models/work-order-dialog"
 import { generateId } from "@/lib/utils/calendar-helpers"
 import FilterDialog from "@/shared/models/filter-dialog"
+import WorkOrderDialog from "@/shared/models/work-order-dialog"
 
 const WorkOrdersPage = () => {
   const dispatch = useAppDispatch()
@@ -35,8 +35,13 @@ const WorkOrdersPage = () => {
   const [page, setPage] = useState(0)
   const [rowsPerPage, setRowsPerPage] = useState(5)
   const [filterDialogOpen, setFilterDialogOpen] = useState(false)
+
+  // This is the filter applied to the data
   const [filterData, setFilterData] = useState({ startDate: "", endDate: "" })
-  const [appliedSearchTerm, setAppliedSearchTerm] = useState("");
+  // This is the local filter data used only inside the dialog inputs
+  const [localFilterData, setLocalFilterData] = useState({ startDate: "", endDate: "" })
+
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState("")
 
   const [formData, setFormData] = useState<WorkOrderFormData>({
     donor: "", panels: "", barcode: "", source: "",
@@ -44,33 +49,39 @@ const WorkOrdersPage = () => {
     amount: "", observedBy: "", status: ""
   });
 
-  const displayOrders = useMemo(() => {
-    const start = filterData.startDate ? new Date(filterData.startDate) : null
-    const end = filterData.endDate ? new Date(filterData.endDate) : null
+  const { displayOrders, dateFilteredCount } = useMemo(() => {
+    const start = filterData.startDate ? new Date(filterData.startDate) : null;
+    const end = filterData.endDate ? new Date(filterData.endDate) : null;
 
-    let filtered = [...orders]
+    let filteredByDate = [...orders];
 
     if (start || end) {
-      filtered = filtered.filter((order) => {
-        const orderDate = new Date(order.date)
-        if (start && end) return orderDate >= start && orderDate <= end
-        if (start) return orderDate >= start
-        if (end) return orderDate <= end
-        return true
-      })
+      filteredByDate = filteredByDate.filter((order) => {
+        const orderDate = new Date(order.date);
+        if (start && end) return orderDate >= start && orderDate <= end;
+        if (start) return orderDate >= start;
+        if (end) return orderDate <= end;
+        return true;
+      });
     }
+
+    const dateFilteredCount = (filterData.startDate && filterData.endDate) ? filteredByDate.length : 0;
+
+    let fullyFiltered = [...filteredByDate];
 
     if (appliedSearchTerm.trim()) {
-      filtered = filtered.filter((order) =>
-        Object.values(order).some((value) =>
+      fullyFiltered = fullyFiltered.filter((order) =>
+        Object.values(order).some((value: string) =>
           value.toString().toLowerCase().includes(appliedSearchTerm.toLowerCase())
         )
-      )
+      );
     }
 
-    return filtered
-  }, [orders, filterData.startDate, filterData.endDate, appliedSearchTerm])
-
+    return {
+      displayOrders: fullyFiltered,
+      dateFilteredCount,
+    };
+  }, [orders, filterData.startDate, filterData.endDate, appliedSearchTerm]);
 
   const paginatedOrders = displayOrders.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
 
@@ -129,10 +140,18 @@ const WorkOrdersPage = () => {
     setPage(0)
   }
 
+  // Open filter dialog and set local copy
+  const openFilterDialog = () => {
+    setLocalFilterData(filterData)
+    setFilterDialogOpen(true)
+  }
+
+  // Apply filter when user clicks apply button
   const filterApply = () => {
-    dispatch(setFilterDate(filterData))
-    setPage(0)
-    setFilterDialogOpen(false)
+    setFilterData(localFilterData);
+    setPage(0);
+    setFilterDialogOpen(false);
+    setLocalFilterData({ startDate: "", endDate: "" });
   }
 
   return (
@@ -179,14 +198,12 @@ const WorkOrdersPage = () => {
             Search
           </Button>
 
-          <Button
-            variant="outlined"
-            onClick={() => setFilterDialogOpen(true)}
+          <Button variant="outlined" onClick={openFilterDialog}
             className="w-full sm:w-auto !bg-[#f4f6f5]  !border-[#17c2af] !rounded-full !text-black !font-bold !text-sm !px-6 !py-2 !shadow-none flex items-center justify-between sm:justify-start gap-2"
             startIcon={<FilterIcon className="text-[#17c2af]" />}>
             <span className="text-gray-600 text-sm">FILTERS</span>
             <span className="bg-[#17c2af] text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
-              0
+              {(filterData.startDate && filterData.endDate) ? dateFilteredCount : 0}
             </span>
           </Button>
         </div>
@@ -207,7 +224,6 @@ const WorkOrdersPage = () => {
               <TableBody>
                 {paginatedOrders.map((order) => (
                   <TableRow key={order.id}>
-                    {/* className="bg-[#ffe7e7]" */}
                     <TableCell className="!text-[#17c2af] font-medium cursor-pointer hover:underline text-xs sm:text-sm">
                       {order.donor}
                     </TableCell>
@@ -261,8 +277,7 @@ const WorkOrdersPage = () => {
               onChange={(e: SelectChangeEvent) => handleChangeRowsPerPage(e)}
               size="small"
               className="text-sm"
-              sx={{ minWidth: 80 }}
-            >
+              sx={{ minWidth: 80 }}>
               {[5, 10, 25, 50].map((val) => (
                 <MenuItem key={val} value={val}>{val}</MenuItem>
               ))}
@@ -299,8 +314,8 @@ const WorkOrdersPage = () => {
         open={filterDialogOpen}
         onClose={() => setFilterDialogOpen(false)}
         onFilter={filterApply}
-        filterData={filterData}
-        setFilterData={setFilterData}
+        filterData={localFilterData}
+        setFilterData={setLocalFilterData}
       />
     </>
   )
