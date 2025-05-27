@@ -221,11 +221,11 @@ const WorkOrdersPage = () => {
                     key={order.id}
                     className={order.highlight ? 'bg-[#ffe7e7]' : ''}
                   >
-                    <TableCell className="text-[#17c2af] font-medium cursor-pointer hover:underline text-xs sm:text-sm">
+                    <TableCell className="!text-[#17c2af] font-medium cursor-pointer hover:underline text-xs sm:text-sm">
                       {order.donor}
                     </TableCell>
                     <TableCell className="text-xs sm:text-sm">{order.panels}</TableCell>
-                    <TableCell className="text-[#17c2af] text-xs sm:text-sm">{order.barcode}</TableCell>
+                    <TableCell className="!text-[#17c2af] text-xs sm:text-sm">{order.barcode}</TableCell>
                     <TableCell className="text-xs sm:text-sm">{order.source}</TableCell>
                     <TableCell className="text-xs sm:text-sm whitespace-nowrap">{order.date}</TableCell>
                     <TableCell className="text-xs sm:text-sm">{order.amount}</TableCell>
