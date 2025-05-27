@@ -61,8 +61,13 @@ const workOrdersSlice = createSlice({
                     new Date(order.date) <= new Date(action.payload.endDate),
             )
         },
+        setFilterDate: (state, action) => {
+            console.log(action.payload)
+            state.startDate = action.payload.startDate;
+            state.endDate = action.payload.endDate;
+        },
     },
 })
 
-export const { setOrders, addOrder, updateOrder, deleteOrder, filterOrders } = workOrdersSlice.actions
+export const { setOrders, addOrder, updateOrder, deleteOrder, filterOrders, setFilterDate } = workOrdersSlice.actions
 export default workOrdersSlice.reducer

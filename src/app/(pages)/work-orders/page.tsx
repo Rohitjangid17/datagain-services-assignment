@@ -1,10 +1,20 @@
 "use client"
 
 import type React from "react"
-import { useState, useEffect } from "react"
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button, TextField, IconButton, Menu, MenuItem, InputAdornment, Select, Typography, Pagination, } from "@mui/material"
-import { Search as SearchIcon, FilterList as FilterIcon, MoreVert as MoreVertIcon, } from "@mui/icons-material"
-import { addOrder, deleteOrder, filterOrders, updateOrder } from "@/lib/redux/slices/workOrdersSlice"
+import { useState, useMemo } from "react"
+import {
+  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
+  Button, TextField, IconButton, Menu, MenuItem, InputAdornment, Select,
+  Typography, Pagination
+} from "@mui/material"
+import {
+  Search as SearchIcon,
+  FilterList as FilterIcon,
+  MoreVert as MoreVertIcon
+} from "@mui/icons-material"
+import {
+  addOrder, deleteOrder, updateOrder, setFilterDate
+} from "@/lib/redux/slices/workOrdersSlice"
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks"
 import PageTitle from "@/shared/components/page-title"
 import { WorkOrder, WorkOrderFormData } from "@/shared/interfaces/common.type"
@@ -14,76 +24,75 @@ import FilterDialog from "@/shared/models/filter-dialog"
 
 const WorkOrdersPage = () => {
   const dispatch = useAppDispatch()
-  const { orders, filteredOrders, startDate, endDate } = useAppSelector((state) => state.workOrders)
+  const { orders } = useAppSelector((state) => state.workOrders)
 
   const [open, setOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [currentOrder, setCurrentOrder] = useState<WorkOrder | null>(null)
-  const [displayOrders, setDisplayOrders] = useState<WorkOrder[]>([])
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-
+  const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(5)
   const [filterDialogOpen, setFilterDialogOpen] = useState(false)
   const [filterData, setFilterData] = useState({ startDate: "", endDate: "" })
+  const [appliedSearchTerm, setAppliedSearchTerm] = useState("");
 
   const [formData, setFormData] = useState<WorkOrderFormData>({
-    donor: "",
-    panels: "",
-    barcode: "",
-    source: "",
-    date: "",
-    amount: "",
-    observedBy: "",
-    status: "",
-  })
+    donor: "", panels: "", barcode: "", source: "",
+    date: new Date().toISOString().split("T")[0],
+    amount: "", observedBy: "", status: ""
+  });
 
-  useEffect(() => {
-    const filtered = filteredOrders.length > 0 ? filteredOrders : orders;
-    setDisplayOrders(filtered)
-  }, [orders, filteredOrders, searchTerm]);
+  const displayOrders = useMemo(() => {
+    const start = filterData.startDate ? new Date(filterData.startDate) : null
+    const end = filterData.endDate ? new Date(filterData.endDate) : null
 
-  // hanle model open
+    let filtered = [...orders]
+
+    if (start || end) {
+      filtered = filtered.filter((order) => {
+        const orderDate = new Date(order.date)
+        if (start && end) return orderDate >= start && orderDate <= end
+        if (start) return orderDate >= start
+        if (end) return orderDate <= end
+        return true
+      })
+    }
+
+    if (appliedSearchTerm.trim()) {
+      filtered = filtered.filter((order) =>
+        Object.values(order).some((value) =>
+          value.toString().toLowerCase().includes(appliedSearchTerm.toLowerCase())
+        )
+      )
+    }
+
+    return filtered
+  }, [orders, filterData.startDate, filterData.endDate, appliedSearchTerm])
+
+
+  const paginatedOrders = displayOrders.slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+
   const handleClickOpen = () => {
     setCurrentOrder(null)
     setFormData({
-      donor: "",
-      panels: "",
-      barcode: "",
-      source: "",
-      date: new Date().toLocaleDateString(),
-      amount: "",
-      observedBy: "",
-      status: "",
+      donor: "", panels: "", barcode: "", source: "",
+      date: new Date().toISOString().split("T")[0],
+      amount: "", observedBy: "", status: ""
     })
     setOpen(true)
   }
 
-  const handleClose = () => {
-    setOpen(false)
-  }
-
   const handleSubmit = () => {
     if (currentOrder) {
-      dispatch(
-        updateOrder({
-          ...currentOrder,
-          ...formData,
-        }),
-      )
+      dispatch(updateOrder({ ...currentOrder, ...formData }))
     } else {
-      dispatch(
-        addOrder({
-          id: generateId(),
-          ...formData,
-        }),
-      )
+      dispatch(addOrder({ id: generateId(), ...formData }))
     }
     setOpen(false)
   }
 
-  const handleEdit = (order: WorkOrder) => {
+  const updateWorkOrder = (order: WorkOrder) => {
     setCurrentOrder(order)
     setFormData({
       donor: order.donor,
@@ -93,13 +102,13 @@ const WorkOrdersPage = () => {
       date: order.date,
       amount: order.amount,
       observedBy: order.observedBy,
-      status: order.status,
+      status: order.status
     })
     setOpen(true)
     handleMenuClose()
   }
 
-  const handleDelete = (id: string) => {
+  const deleteWorkOrder = (id: string) => {
     dispatch(deleteOrder(id))
     handleMenuClose()
   }
@@ -114,47 +123,16 @@ const WorkOrdersPage = () => {
     setSelectedOrderId(null)
   }
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>, field: "startDate" | "endDate") => {
-    const value = e.target.value
-    if (field === "startDate") {
-      dispatch(filterOrders({ startDate: value, endDate }))
-    } else {
-      dispatch(filterOrders({ startDate, endDate: value }))
-    }
-  }
-
-  // const handleChangePage = (_event: unknown, newPage: number) => {
-  //   setPage(newPage);
-  // };
-
   const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
-  }
-
-  const searchOrdersData = () => {
-    const filtered = filteredOrders.length > 0 ? filteredOrders : orders
-    if (searchTerm.trim()) {
-      setDisplayOrders(
-        filtered.filter((order) =>
-          Object.values(order).some((value) =>
-            value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-          )
-        )
-      )
-    } else {
-      setDisplayOrders(filtered)
-    }
+    setRowsPerPage(parseInt(event.target.value, 10))
     setPage(0)
   }
 
-  // filter apply
   const filterApply = () => {
-    dispatch(filterOrders(filterData))
+    dispatch(setFilterDate(filterData))
+    setPage(0)
     setFilterDialogOpen(false)
   }
-
-  const paginatedOrders = displayOrders.slice(page * rowsPerPage, (page + 1) * rowsPerPage);
 
   return (
     <>
@@ -162,11 +140,15 @@ const WorkOrdersPage = () => {
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4">
-          <div className="text-gray-600 font-bold">Date:</div>
+          {filterData.startDate && filterData.endDate && <div className="text-gray-600 font-bold">Date:</div>}
           <div className="flex items-center gap-x-1 text-sm text-gray-600">
-            <span>06/01/2024</span>
-            <span>-</span>
-            <span>07/19/2024</span>
+            {filterData.startDate && filterData.endDate &&
+              <>
+                <span>{filterData.startDate || "Start"}</span>
+                <span>-</span>
+                <span>{filterData.endDate || "End"}</span>
+              </>
+            }
           </div>
         </div>
 
@@ -186,7 +168,13 @@ const WorkOrdersPage = () => {
             className="w-full sm:w-64"
           />
 
-          <Button variant="contained" onClick={searchOrdersData} className="!bg-[#17c2af] w-full sm:w-auto !rounded-full !text-white !font-bold !text-sm !px-6 !py-3 !shadow-none">
+          <Button
+            variant="contained"
+            onClick={() => {
+              setAppliedSearchTerm(searchTerm)
+              setPage(0)
+            }}
+            className="!bg-[#17c2af] w-full sm:w-auto !rounded-full !text-white !font-bold !text-sm !px-6 !py-3 !shadow-none">
             Search
           </Button>
 
@@ -197,7 +185,7 @@ const WorkOrdersPage = () => {
             startIcon={<FilterIcon className="text-[#17c2af]" />}>
             <span className="text-gray-600 text-sm">FILTERS</span>
             <span className="bg-[#17c2af] text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center">
-              3
+              0
             </span>
           </Button>
         </div>
@@ -217,10 +205,7 @@ const WorkOrdersPage = () => {
 
               <TableBody>
                 {paginatedOrders.map((order: any) => (
-                  <TableRow
-                    key={order.id}
-                    className={order.highlight ? 'bg-[#ffe7e7]' : ''}
-                  >
+                  <TableRow key={order.id} className={order.highlight ? 'bg-[#ffe7e7]' : ''}>
                     <TableCell className="!text-[#17c2af] font-medium cursor-pointer hover:underline text-xs sm:text-sm">
                       {order.donor}
                     </TableCell>
@@ -243,13 +228,12 @@ const WorkOrdersPage = () => {
           </TableContainer>
         </div>
 
-        {/* Pagination */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-2 px-4 py-3">
           <div className="flex items-center gap-2 flex-wrap">
             <Pagination
-              count={Math.ceil(orders.length / rowsPerPage)}
+              count={Math.ceil(displayOrders.length / rowsPerPage)}
               page={page + 1}
-              onChange={(_: any, value: any) => setPage(value - 1)}
+              onChange={(_, value) => setPage(value - 1)}
               shape="rounded"
               variant="outlined"
               size="small"
@@ -285,28 +269,24 @@ const WorkOrdersPage = () => {
           </div>
 
           <Typography variant="body2" className="text-sm text-[#17c2af] font-medium text-center sm:text-left">
-            Showing {page * rowsPerPage + 1} -{' '}
-            {Math.min((page + 1) * rowsPerPage, orders.length)} of {orders.length}
+            Showing {page * rowsPerPage + 1} - {Math.min((page + 1) * rowsPerPage, displayOrders.length)} of {displayOrders.length}
           </Typography>
         </div>
 
         <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
-          <MenuItem
-            onClick={() => {
-              if (selectedOrderId) {
-                const order = orders.find((o: any) => o.id === selectedOrderId);
-                if (order) handleEdit(order);
-              }
-            }}>
-            Edit
-          </MenuItem>
-          <MenuItem onClick={() => selectedOrderId && handleDelete(selectedOrderId)}>Delete</MenuItem>
+          <MenuItem onClick={() => {
+            if (selectedOrderId) {
+              const order = orders.find((o: any) => o.id === selectedOrderId);
+              if (order) updateWorkOrder(order);
+            }
+          }}>Edit</MenuItem>
+          <MenuItem onClick={() => selectedOrderId && deleteWorkOrder(selectedOrderId)}>Delete</MenuItem>
         </Menu>
       </Paper>
 
       <WorkOrderDialog
         open={open}
-        onClose={handleClose}
+        onClose={() => setOpen(false)}
         onSubmit={handleSubmit}
         formData={formData}
         setFormData={setFormData}
@@ -320,9 +300,8 @@ const WorkOrdersPage = () => {
         filterData={filterData}
         setFilterData={setFilterData}
       />
-
     </>
   )
 }
 
-export default WorkOrdersPage;
+export default WorkOrdersPage
