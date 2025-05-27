@@ -1,9 +1,7 @@
 "use client"
 
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Select, MenuItem, FormControl, InputLabel, Button } from "@mui/material"
-import { CalendarEvent, EventDialogProps } from "@/shared/interfaces/common.type"
-
-
+import { EventDialogProps } from "@/shared/interfaces/common.type"
 
 const EventDialog: React.FC<EventDialogProps> = ({
     open,

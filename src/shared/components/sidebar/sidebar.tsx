@@ -3,7 +3,7 @@
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '@/lib/redux/store';
 import { usePathname } from 'next/navigation';
-import { Work, Report, CalendarMonth, ChevronRight, Close, } from '@mui/icons-material';
+import { Work, Report, CalendarMonth, Close, } from '@mui/icons-material';
 import { closeMainSidebar } from '@/lib/redux/slices/sidebarSlice';
 import SidebarItem from './sidebar-item';
 
