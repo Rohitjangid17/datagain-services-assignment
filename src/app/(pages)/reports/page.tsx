@@ -10,7 +10,7 @@ export default function ReportsPage() {
   const [dueDate, setDueDate] = useState("")
   const [agency, setAgency] = useState("")
   const [format, setFormat] = useState("")
-  const [useDate, setUseDate] = useState("collected")
+  const [useDate, setUseDate] = useState("")
 
   const handleSubmit = () => {
     console.log({
